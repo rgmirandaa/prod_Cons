@@ -11,11 +11,11 @@
 
 #define _wait(a) sleep(rand() % a)
 #define out(s) \
-	printf (s); \
-	fflush(stdout)
+        printf (s); \
+        fflush(stdout)
 #define outi(s,n) \
-	printf(s,n); \
-	fflush(stdout)
+        printf(s,n); \
+        fflush(stdout)
 
 int n;
 sem_t s, delay;
@@ -29,31 +29,31 @@ void *producer(void *data)
 {
 while(1)
 {
-	produce();
-	sem_wait(&s);
-	append();
-	n=n+1;
-	outi("[P]\t\t item: %d\n", n);
-	if (n == 1)
-		sem_post(&delay);
-	sem_post(&s);
+        produce();
+        sem_wait(&s);
+        append();
+        n=n+1;
+        outi("[P]\t\t item: %d\n", n);
+        if (n == 1)
+                sem_post(&delay);
+        sem_post(&s);
 }
 phtread_exit(0);
 }
 
 void *consumer(void *data)
 {
-sem_wait(&delay);
+sem_post(&delay);
 while (1)
 {
-	sem_wait(&s);
-	take();
-	outi("[C]\t\t item: %d\n", n);
-	n=n-1;
-	sem_post(&s);
-	consume();
-	if (n == 0)
-		sem_wait(&delay);
+        sem_wait(&s);
+        take();
+        outi("[C]\t\t item: %d\n", n);
+        n=n-1;
+        sem_post(&s);
+        consume();
+        if (n == 0)
+                sem_wait(&delay);
 }
 pthread_exit(0);
 }
@@ -82,30 +82,17 @@ void append()
 out("[P] \t Appending\n");
 _wait(MAXAPPENDING);
 out("[P] \t Appended\n");
-}
 
 void take()
 {
-out("[C] \t Taking\n");
+out("[P] Taking\n");
 _wait(MAXTAKING);
-out("[C] \t Taked\n");
+out("[P] Taked\n");
 }
 
 void consume()
 {
-out("[C] \t Consuming\n");
+out("[P] \t Consuming\n");
 _wait(MAXCONSUMING);
-out("[C] \t Consumed\n");
+out("[P] \t Consumed\n");
 }
-
-
-
-
-
-
-
-
-
-
-
-
